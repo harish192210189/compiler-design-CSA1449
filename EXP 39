@@ -1,0 +1,40 @@
+%{
+#include <stdio.h>
+#include <string.h>
+%}
+
+%%
+"old_word"   { fputs("new_word", yyout); }
+.            { fputc(yytext[0], yyout); }
+%%
+
+int main() {
+    FILE *input = fopen("input.txt", "r");
+    if (!input) {
+        printf("Error: Unable to open input file\n");
+        return 1;
+    }
+
+    FILE *output = fopen("output.txt", "w");
+    if (!output) {
+        printf("Error: Unable to open output file\n");
+        fclose(input);
+        return 1;
+    }
+
+    yyin = input;
+    yyout = output;
+
+    yylex();
+
+    fclose(input);
+    fclose(output);
+
+    printf("Word \"old_word\" replaced with \"new_word\" successfully\n");
+
+    return 0;
+}
+int yywrap()
+{
+return 1;
+}
